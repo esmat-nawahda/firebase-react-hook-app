@@ -21,6 +21,8 @@ const useRTDatabaseList = (path, pagination) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [pageData, setPageData] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [numberOfPages, setNumberOfPages] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -41,6 +43,9 @@ const useRTDatabaseList = (path, pagination) => {
 
           if (pagination) {
             const paginatedList = getPaginatedList(list);
+            setTotal(list.length);
+            setNumberOfPages(Math.ceil(list.length / pagination.limit));
+
             setPageData(paginatedList);
           }
           setLoading(false);
@@ -54,14 +59,14 @@ const useRTDatabaseList = (path, pagination) => {
   }, []);
 
   const getPaginatedList = arr => {
-    // const { page, limit } = pagination;
-    // const fromIndex = (page - 1) * limit;
-    // const toIndex = page * limit;
-    // return arr.slice(fromIndex, toIndex);
+    const { page, limit } = pagination;
+    const fromIndex = (page - 1) * limit;
+    const toIndex = page * limit;
+    return arr.slice(fromIndex, toIndex);
   };
 
-  console.log([data, loading, error]);
-  return [data, loading, error];
+  console.log([data, pageData, total, numberOfPages, loading, error]);
+  return [data, pageData, pageData, total, loading, error];
 };
 
 export default useRTDatabaseList;
