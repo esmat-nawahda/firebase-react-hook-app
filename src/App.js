@@ -4,7 +4,10 @@ import "./style.css";
 import useRTDatabaseList from "./firebase-hooks/useRTDatabaseList";
 
 export default function App() {
-  const [data, loading, error] = useRTDatabaseList();
+  const [data, loading, error] = useRTDatabaseList(
+    "conversations/5f81e375e3e2fc177434db9b/messages",
+    { page: 1, limit: 5 }
+  );
 
   return (
     <div>

@@ -17,15 +17,13 @@ if (!firebase.apps.length) {
   firebase.initializeApp(config);
 }
 
-const useRTDatabaseList = () => {
+const useRTDatabaseList = path => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const ref = firebase
-      .database()
-      .ref(`conversations/5f81e375e3e2fc177434db9b/messages`);
+    const ref = firebase.database().ref(path);
     ref.on(
       "value",
       snapshot => {
