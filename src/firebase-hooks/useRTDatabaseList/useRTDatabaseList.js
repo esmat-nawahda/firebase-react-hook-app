@@ -53,9 +53,9 @@ const useRTDatabaseList = (path, pagination) => {
 
   useEffect(() => {
     if (pagination) {
-      const paginatedList = getPaginatedList(list);
-      setTotal(list.length);
-      setNumberOfPages(Math.ceil(list.length / pagination.limit));
+      const paginatedList = getPaginatedList(data);
+      setTotal(data.length);
+      setNumberOfPages(Math.ceil(data.length / pagination.limit));
 
       setPageData(paginatedList);
     }
