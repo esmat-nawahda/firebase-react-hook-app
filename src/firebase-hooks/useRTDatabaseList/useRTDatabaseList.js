@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useReducer } from "react";
 import firebase from "firebase";
 
 // Firebase Config
@@ -17,14 +17,41 @@ if (!firebase.apps.length) {
   firebase.initializeApp(config);
 }
 
+const constants = {
+  DATA_LOADED: "data-loaded",
+  SET_PAGINATION_DATA: "set-pagination-data",
+  SET_PAGE_NUMBER: "set-page-number"
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case constants.DATA_LOADED:
+    case constants.SET_PAGINATION_DATA:
+    case constants.SET_PAGE_NUMBER:
+      return { ...state, ...action.payload };
+  }
+};
+
+const initialState = {
+  loading: true,
+  allData: [],
+  pageData: [],
+  total: 0,
+  numberOfPages: 1,
+  error: null,
+  page: 1
+};
+
 const useRTDatabaseList = (path, pagination) => {
   const [loading, setLoading] = useState(true);
   const [allData, setData] = useState([]);
   const [pageData, setPageData] = useState([]);
   const [total, setTotal] = useState(0);
-  const [numberOfPages, setNumberOfPages] = useState([]);
+  const [numberOfPages, setNumberOfPages] = useState(1);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
+
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
     const ref = firebase.database().ref(path);
@@ -40,8 +67,13 @@ const useRTDatabaseList = (path, pagination) => {
               ...item
             });
           });
-          setData(list);
-          setLoading(false);
+          // setData(list);
+          // setLoading(false);
+
+          dispatch({
+            type: constants.DATA_LOADED,
+            payload: { allData: list, loading: false }
+          });
         }
       },
       err => {
@@ -54,10 +86,17 @@ const useRTDatabaseList = (path, pagination) => {
   useEffect(() => {
     if (pagination) {
       const paginatedList = getPaginatedList(allData);
-      setTotal(allData.length);
-      setNumberOfPages(Math.ceil(allData.length / pagination.limit));
-
-      setPageData(paginatedList);
+      // setTotal(allData.length);
+      // setNumberOfPages(Math.ceil(allData.length / pagination.limit));
+      // setPageData(paginatedList);
+      dispatch({
+        type: constants.SET_PAGINATION_DATA,
+        payload: {
+          total: allData.length,
+          numberOfPages: Math.ceil(allData.length / pagination.limit),
+          pageData: paginatedList
+        }
+      });
     }
   }, [allData, page]);
 
@@ -70,19 +109,31 @@ const useRTDatabaseList = (path, pagination) => {
 
   const prevPage = useCallback(() => {
     if (page > 1) {
-      setPage(oldPage => oldPage - 1);
+      // setPage(oldPage => oldPage - 1);
+      dispatch({
+        type: constants.SET_PAGE_NUMBER,
+        payload: { page: state.page - 1 }
+      });
     }
   });
 
   const nextPage = useCallback(() => {
     if (page < numberOfPages) {
-      setPage(oldPage => oldPage + 1);
+      // setPage(oldPage => oldPage + 1);
+      dispatch({
+        type: constants.SET_PAGE_NUMBER,
+        payload: { page: state.page + 1 }
+      });
     }
   });
 
   const visitPage = useCallback(pageNumber => {
     if (page > 0 && pageNumber <= numberOfPages) {
-      setPage(pageNumber);
+      // setPage(pageNumber);
+      dispatch({
+        type: constants.SET_PAGE_NUMBER,
+        payload: { page: pageNumber }
+      });
     }
   });
 
