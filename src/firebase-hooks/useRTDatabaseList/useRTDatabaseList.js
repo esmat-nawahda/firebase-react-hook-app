@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import firebase from "firebase";
 
 // Firebase Config
@@ -24,6 +24,7 @@ const useRTDatabaseList = (path, pagination) => {
   const [total, setTotal] = useState(0);
   const [numberOfPages, setNumberOfPages] = useState([]);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     const ref = firebase.database().ref(path);
@@ -40,14 +41,6 @@ const useRTDatabaseList = (path, pagination) => {
             });
           });
           setData(list);
-
-          if (pagination) {
-            const paginatedList = getPaginatedList(list);
-            setTotal(list.length);
-            setNumberOfPages(Math.ceil(list.length / pagination.limit));
-
-            setPageData(paginatedList);
-          }
           setLoading(false);
         }
       },
@@ -58,15 +51,53 @@ const useRTDatabaseList = (path, pagination) => {
     );
   }, []);
 
+  useEffect(() => {
+    if (pagination) {
+      const paginatedList = getPaginatedList(list);
+      setTotal(list.length);
+      setNumberOfPages(Math.ceil(list.length / pagination.limit));
+
+      setPageData(paginatedList);
+    }
+  }, [data, page]);
+
   const getPaginatedList = arr => {
-    const { page, limit } = pagination;
+    const { limit } = pagination;
     const fromIndex = (page - 1) * limit;
     const toIndex = page * limit;
     return arr.slice(fromIndex, toIndex);
   };
 
-  console.log([data, pageData, total, numberOfPages, loading, error]);
-  return [data, pageData, pageData, total, loading, error];
+  const prevPage = useCallback(() => {
+    if (page > 1) {
+      setPage(oldPage => oldPage - 1);
+    }
+  });
+
+  const nextPage = useCallback(() => {
+    if (page < numberOfPages) {
+      setPage(oldPage => oldPage + 1);
+    }
+  });
+
+  const visitPage = useCallback(pageNumber => {
+    if (page > 0 && pageNumber <= numberOfPages) {
+      setPage(pageNumber);
+    }
+  });
+
+  console.log([data, pageData, total, numberOfPages, loading, error, page]);
+  return [
+    data,
+    pageData,
+    total,
+    loading,
+    error,
+    page,
+    prevPage,
+    nextPage,
+    visitPage
+  ];
 };
 
 export default useRTDatabaseList;
