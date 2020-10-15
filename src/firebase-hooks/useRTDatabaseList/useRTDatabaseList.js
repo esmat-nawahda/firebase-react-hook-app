@@ -19,7 +19,7 @@ if (!firebase.apps.length) {
 
 const useRTDatabaseList = (path, pagination) => {
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
+  const [allData, setData] = useState([]);
   const [pageData, setPageData] = useState([]);
   const [total, setTotal] = useState(0);
   const [numberOfPages, setNumberOfPages] = useState([]);
@@ -32,7 +32,7 @@ const useRTDatabaseList = (path, pagination) => {
       "value",
       snapshot => {
         if (snapshot) {
-          let list = [];
+          const list = [];
           snapshot.forEach((item, i) => {
             item = item.val();
             list.push({
@@ -53,13 +53,13 @@ const useRTDatabaseList = (path, pagination) => {
 
   useEffect(() => {
     if (pagination) {
-      const paginatedList = getPaginatedList(data);
-      setTotal(data.length);
-      setNumberOfPages(Math.ceil(data.length / pagination.limit));
+      const paginatedList = getPaginatedList(allData);
+      setTotal(allData.length);
+      setNumberOfPages(Math.ceil(allData.length / pagination.limit));
 
       setPageData(paginatedList);
     }
-  }, [data, page]);
+  }, [allData, page]);
 
   const getPaginatedList = arr => {
     const { limit } = pagination;
@@ -86,13 +86,14 @@ const useRTDatabaseList = (path, pagination) => {
     }
   });
 
-  console.log([data, pageData, total, numberOfPages, loading, error, page]);
+  console.log([allData, pageData, total, numberOfPages, loading, error, page]);
   return [
-    data,
+    allData,
     pageData,
     total,
     loading,
     error,
+    numberOfPages,
     page,
     prevPage,
     nextPage,

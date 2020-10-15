@@ -5,11 +5,12 @@ import useRTDatabaseList from "./firebase-hooks/useRTDatabaseList";
 
 export default function App() {
   const [
-    data,
+    allData,
     pageData,
     total,
     loading,
     error,
+    numberOfPages,
     page,
     prevPage,
     nextPage,
@@ -20,7 +21,9 @@ export default function App() {
 
   return (
     <div>
-      <h1>Hello Firebase Hooks</h1>
+      <h1>
+        Hello Firebase Hooks ({page}/{numberOfPages})
+      </h1>
       <button onClick={prevPage}>PREV</button>
       <button onClick={nextPage}>NEXT</button>
       <button onClick={() => visitPage(7)}>Go to page</button>
