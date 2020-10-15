@@ -17,9 +17,10 @@ if (!firebase.apps.length) {
   firebase.initializeApp(config);
 }
 
-const useRTDatabaseList = path => {
+const useRTDatabaseList = (path, pagination) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+  const [pageData, setPageData] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -37,6 +38,11 @@ const useRTDatabaseList = path => {
             });
           });
           setData(list);
+
+          if (pagination) {
+            const paginatedList = getPaginatedList(list);
+            setPageData(paginatedList);
+          }
           setLoading(false);
         }
       },
@@ -46,6 +52,13 @@ const useRTDatabaseList = path => {
       }
     );
   }, []);
+
+  const getPaginatedList = arr => {
+    // const { page, limit } = pagination;
+    // const fromIndex = (page - 1) * limit;
+    // const toIndex = page * limit;
+    // return arr.slice(fromIndex, toIndex);
+  };
 
   console.log([data, loading, error]);
   return [data, loading, error];
