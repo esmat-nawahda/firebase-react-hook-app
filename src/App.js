@@ -23,6 +23,7 @@ export default function App() {
       <h1>Hello Firebase Hooks</h1>
       <button onClick={prevPage}>PREV</button>
       <button onClick={nextPage}>NEXT</button>
+      <button onClick={() => visitPage(7)}>Go to page</button>
       {loading ? <div>Loading...</div> : <p>{JSON.stringify(pageData)}</p>}
     </div>
   );
