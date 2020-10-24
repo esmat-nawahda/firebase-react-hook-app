@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import firebase from "firebase";
 
 const useRTDatabaseValue = path => {
@@ -20,7 +20,22 @@ const useRTDatabaseValue = path => {
     );
   }, []);
 
-  return [rtValue];
+  const setValue = useCallback(record => {
+    firebase
+      .database()
+      .ref(path)
+      .set(record, error => {
+        if (error) {
+          // The write failed...
+          console.log("Failure on adding new record");
+        } else {
+          // Data saved successfully!
+          console.log("Record added successfully");
+        }
+      });
+  });
+
+  return [rtValue, setValue];
 };
 
 export default useRTDatabaseValue;

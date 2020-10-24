@@ -34,17 +34,22 @@ export default function App() {
     nextPage,
     visitPage,
     addRecord
-  ] = useRTDatabaseList("conversations/5f81e375e3e2fc177434db9b/messages", {
+  ] = useRTDatabaseList("conversations/5f8346d4082d8e7c511b8cdd/messages", {
     limit: 5
   });
-  const [rtValue] = useRTDatabaseValue(
+  const [rtValue, setValue] = useRTDatabaseValue(
     "/conversations/5f5d2dcf7cf1e510c882a3ec/createdAt"
   );
 
   const addItemToList = () => {
     addRecord({
-      messages: [],
       createdAt: firebase.database.ServerValue.TIMESTAMP,
+      testKey: "TEST TEST TEST"
+    });
+  };
+
+  const setRTValue = () => {
+    setValue({
       testKey: "TEST TEST TEST"
     });
   };
@@ -61,6 +66,7 @@ export default function App() {
       {loading ? <div>Loading...</div> : <p>{JSON.stringify(pageData)}</p>}
       <hr />
       <h3>{rtValue}</h3>
+      <button onClick={() => setRTValue()}>Set record</button>
     </div>
   );
 }
