@@ -105,6 +105,21 @@ const useRTDatabaseList = (path, pagination) => {
     }
   });
 
+  const addRecord = useCallback(record => {
+    firebase
+      .database()
+      .ref(path)
+      .set(record, error => {
+        if (error) {
+          // The write failed...
+          console.log("Failure on adding new record");
+        } else {
+          // Data saved successfully!
+          console.log("Record added successfully");
+        }
+      });
+  });
+
   const {
     allData,
     pageData,
@@ -126,7 +141,8 @@ const useRTDatabaseList = (path, pagination) => {
     page,
     prevPage,
     nextPage,
-    visitPage
+    visitPage,
+    addRecord
   ];
 };
 

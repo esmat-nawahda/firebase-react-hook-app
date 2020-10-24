@@ -32,13 +32,22 @@ export default function App() {
     page,
     prevPage,
     nextPage,
-    visitPage
+    visitPage,
+    addRecord
   ] = useRTDatabaseList("conversations/5f81e375e3e2fc177434db9b/messages", {
     limit: 5
   });
   const [rtValue] = useRTDatabaseValue(
     "/conversations/5f5d2dcf7cf1e510c882a3ec/createdAt"
   );
+
+  const addItemToList = () => {
+    addRecord({
+      messages: [],
+      createdAt: firebase.database.ServerValue.TIMESTAMP,
+      testKey: "TEST TEST TEST"
+    });
+  };
 
   return (
     <div>
@@ -48,6 +57,7 @@ export default function App() {
       <button onClick={prevPage}>PREV</button>
       <button onClick={nextPage}>NEXT</button>
       <button onClick={() => visitPage(7)}>Go to page</button>
+      <button onClick={() => addItemToList()}>Add record</button>
       {loading ? <div>Loading...</div> : <p>{JSON.stringify(pageData)}</p>}
       <hr />
       <h3>{rtValue}</h3>
