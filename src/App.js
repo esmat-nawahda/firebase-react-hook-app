@@ -34,11 +34,11 @@ export default function App() {
     nextPage,
     visitPage,
     addRecord
-  ] = useRTDatabaseList("conversations/5f8346d4082d8e7c511b8cdd/messages", {
+  ] = useRTDatabaseList("conversations/5f663710cccbae4cfdfc382e/messages", {
     limit: 5
   });
   const [rtValue, setValue] = useRTDatabaseValue(
-    "/conversations/5f5d2dcf7cf1e510c882a3ec/createdAt"
+    "/conversations/5f663710cccbae4cfdfc382e/createdAt"
   );
 
   const addItemToList = () => {
