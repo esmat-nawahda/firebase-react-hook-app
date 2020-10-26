@@ -1,4 +1,5 @@
 import { useEffect, useCallback, useReducer } from "react";
+import PropTypes from "prop-types";
 import firebase from "firebase";
 import { v4 as uuidv4 } from "uuid";
 
@@ -144,6 +145,11 @@ const useRTDatabaseList = (path, limit = 10) => {
     visitPage,
     addRecord
   ];
+};
+
+useRTDatabaseList.prototype = {
+  path: PropTypes.string,
+  limit: PropTypes.number
 };
 
 export default useRTDatabaseList;

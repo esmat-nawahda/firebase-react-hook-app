@@ -34,7 +34,7 @@ export default function App() {
     nextPage,
     visitPage,
     addRecord
-  ] = useRTDatabaseList("conversations/5f6df949e3b8b00960ce371a/messages");
+  ] = useRTDatabaseList("conversations/5f6df949e3b8b00960ce371a/messages", 3);
   const [rtValue, setValue] = useRTDatabaseValue(
     "/conversations/5f6df949e3b8b00960ce371a/createdAt"
   );
