@@ -1,9 +1,10 @@
 import React from "react";
 import firebase from "firebase";
+import FirebaseHooks from "easy-firebase-react-hooks";
 import "./style.css";
 
-import useRTDatabaseList from "./firebase-hooks/useRTDatabaseList";
-import useRTDatabaseValue from "./firebase-hooks/useRTDatabaseValue";
+// import useRTDatabaseList from "./firebase-hooks/useRTDatabaseList";
+// import useRTDatabaseValue from "./firebase-hooks/useRTDatabaseValue";
 
 // Firebase Config
 const config = {
@@ -34,8 +35,11 @@ export default function App() {
     nextPage,
     visitPage,
     addRecord
-  ] = useRTDatabaseList("conversations/5f6df949e3b8b00960ce371a/messages", 3);
-  const [rtValue, setValue] = useRTDatabaseValue(
+  ] = FirebaseHooks.useRTDatabaseList(
+    "conversations/5f6df949e3b8b00960ce371a/messages",
+    3
+  );
+  const [rtValue, setValue] = FirebaseHooks.useRTDatabaseValue(
     "/conversations/5f6df949e3b8b00960ce371a/createdAt"
   );
 
