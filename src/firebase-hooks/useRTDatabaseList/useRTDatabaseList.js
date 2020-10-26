@@ -1,5 +1,6 @@
 import { useEffect, useCallback, useReducer } from "react";
 import firebase from "firebase";
+import { v4 as uuidv4 } from "uuid";
 
 const constants = {
   DATA_LOADED: "data-loaded",
@@ -26,7 +27,7 @@ const initialState = {
   page: 1
 };
 
-const useRTDatabaseList = (path, pagination) => {
+const useRTDatabaseList = (path, limit = 10) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
@@ -58,13 +59,13 @@ const useRTDatabaseList = (path, pagination) => {
   }, []);
 
   useEffect(() => {
-    if (pagination) {
+    if (limit) {
       const paginatedList = getPaginatedList(state.allData);
       dispatch({
         type: constants.SET_PAGINATION_DATA,
         payload: {
           total: state.allData.length,
-          numberOfPages: Math.ceil(state.allData.length / pagination.limit),
+          numberOfPages: Math.ceil(state.allData.length / limit),
           pageData: paginatedList
         }
       });
@@ -72,7 +73,6 @@ const useRTDatabaseList = (path, pagination) => {
   }, [state.allData, state.page]);
 
   const getPaginatedList = arr => {
-    const { limit } = pagination;
     const fromIndex = (page - 1) * limit;
     const toIndex = page * limit;
     return arr.slice(fromIndex, toIndex);
@@ -108,7 +108,7 @@ const useRTDatabaseList = (path, pagination) => {
   const addRecord = useCallback(record => {
     firebase
       .database()
-      .ref(path)
+      .ref(`${path}/${uuidv4()}`)
       .set(record, error => {
         if (error) {
           // The write failed...
